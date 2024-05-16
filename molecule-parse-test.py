@@ -1,30 +1,36 @@
 elemData = [['A', 'B', 'C', 'D'],
             [ 1,   2,   3,   4]]
 
-def portionMass(atom):
-    """recursive function for finding the mass of a molecule partition
-    atom is a string of either a single element, a single element with an integer multiple, or a compound in parentheses
+def partMass(atomArr):
     """
-    if len(atom) == 1:                                  # just a single atom
-        return elemData[1][elemData[0].index(atom)]
-    
-    elif '(' not in atom or '(' not in atom:            # single element with integer multiple, like Cl2
-        i = 0
-        for ch in atom:                                     # find index of number start
-            if ch not in '1234567890':
-                i += 1
-            else:
-                break
-        return portionMass(atom[:i]) * int(atom[i:])
-    
-    else:                                               # compound in parentheses
-        i = -1
-        for ch in atom[::-1]:                               # find index of last closing parenthesis
-            if ch != ')':
-                i -= 1
-            else:
-                break
-        return portionMass(atom[1:i]) * int(atom[i+1:])
+    recursive function for finding the mass of a molecule partition array
+
+    atomArr is an array of strings of either:  a single element, 
+    a single element with an integer multiple, or a compound in parentheses
+    """
+    mass = 0
+    for atom in atomArr:
+        if len(atom) == 1:                                              # just a single atom
+            mass += elemData[1][elemData[0].index(atom)]
+        
+        elif '(' not in atom or '(' not in atom:                        # single element with integer multiple, like Cl2
+            i = 0
+            for ch in atom:                                                     # find index of number start
+                if ch not in '1234567890':
+                    i += 1
+                else:
+                    break
+            mass += partMass(atom[:i]) * int(atom[i:])
+        
+        else:                                                           # compound in parentheses
+            i = -1
+            for ch in atom[::-1]:                                               # find index of last closing parenthesis
+                if ch != ')':
+                    i -= 1
+                else:
+                    break
+            mass += partMass(partMol(atom[1:i])) * int(atom[i+1:])
+    return mass
     
 """
 NOTES:
